@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { Button, Container, Paper } from '@mui/material';
+import { Button, Container, Paper, Table, TableHead, TableContainer, TableBody, TableRow, TableCell } from '@mui/material';
 import axios from 'axios';
 
 export default function RouteForm() {
@@ -12,10 +12,10 @@ export default function RouteForm() {
     const handleClick = (e) => {
         e.preventDefault();
         const body = {source: source, dest: dest}
-        axios.get("http://localhost:8080/api/v1/routeDetails", {params: {source: source, dest: dest}}).then(
+        axios.get("http://localhost:8080/api/v1/routeDetails/getSrcAndDest", {params: {source: source, dest: dest}}).then(
         (response) => {
         setRoutes(response.data);
-        //console.log(response.data[0]);
+        console.log(response.data);
         })
     }
   return (
@@ -28,7 +28,35 @@ export default function RouteForm() {
             <Button variant="contained" style={{margin:'40px 0px 0px 0px'}} onClick={handleClick}>SEARCH</Button>
         </form>
       </Paper>
-      
+      <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Bus Number</TableCell>
+            <TableCell align="right">Bus Name</TableCell>
+            <TableCell align="right">Distance</TableCell>
+            <TableCell align="right">ETA</TableCell>
+            <TableCell align="right">Available Number of Seats</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {routes.map((row) => (
+            <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {row.bus.busNumber}
+              </TableCell>
+              <TableCell align="right">{row.bus.busName}</TableCell>
+              <TableCell align="right">{row.distance}</TableCell>
+              <TableCell align="right">{row._ETA}</TableCell>
+              <TableCell align="right">{row.availableSeats.length}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
     </Container>
   );
 }
